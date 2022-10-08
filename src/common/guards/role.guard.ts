@@ -1,12 +1,13 @@
 import { CanActivate, ExecutionContext } from "@nestjs/common";
 import {Reflector} from '@nestjs/core'
 import { Role } from "@prisma/client";
+import { Observable } from "rxjs";
 import { IS_ADMIN } from "../decorators/isAdmin.decorator";
 
 export class RoleGuard implements CanActivate {
     constructor(private reflector: Reflector) {}
 
-    canActivate(context: ExecutionContext): boolean {
+    canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
         const isAdmin = this.reflector.getAllAndOverride(IS_ADMIN, [
             context.getHandler(),
             context.getClass()
