@@ -1,5 +1,6 @@
 import { Controller, Body, Post, Get, Patch, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/auth/public.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { isAdmin } from 'src/common/decorators/isAdmin.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -16,6 +17,7 @@ export class UserController {
 
   /** Create New User  */
   @ApiOperation({summary: 'Create New User'})
+  @Public()
   @Post()
   create(@Body() CreateUser: CreateUserDto) {
     return this.userService.createUser(CreateUser)
