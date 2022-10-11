@@ -13,4 +13,5 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
         example: 'abc123456'
     })
     currentPassword?: string
+    
 }
