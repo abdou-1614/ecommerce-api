@@ -58,7 +58,6 @@ export class UserController {
     return this.userService.updateRole(updateRole)
   }
 
-
   /**Delete User */
   @ApiOperation({summary: 'Delete User'})
   @ApiBearerAuth()
