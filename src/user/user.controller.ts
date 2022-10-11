@@ -1,5 +1,5 @@
 import { Controller, Body, Post, Get, Patch, Delete, HttpCode, HttpStatus } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Public } from 'src/auth/public.decorator';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { isAdmin } from 'src/common/decorators/isAdmin.decorator';
@@ -28,6 +28,9 @@ export class UserController {
   @ApiOperation({summary: 'Get User Profile'})
   @ApiBearerAuth()
   @Get()
+  @ApiOkResponse({
+    type: UserWithoutPassword
+  })
   findById(@CurrentUser('id') userId: string): Promise<UserWithoutPassword> {
     return this.userService.findById(userId)
   }
@@ -36,6 +39,9 @@ export class UserController {
   @ApiOperation({summary: 'Update User'})
   @ApiBearerAuth()
   @Patch()
+  @ApiOkResponse({
+    type: UserWithoutPassword
+  })
   update(@CurrentUser('id') userId: string, @Body() updateUser: UpdateUserDto): Promise<UserWithoutPassword> {
     return this.userService.update(userId, updateUser)
   }
@@ -45,6 +51,9 @@ export class UserController {
   @ApiOperation({summary: 'Admin Update User Role'})
   @isAdmin()
   @Patch('role')
+  @ApiOkResponse({
+    type: UserWithoutPassword
+  })
   updateRole(@Body() updateRole: UpdateUserRole): Promise<UserWithoutPassword> {
     return this.userService.updateRole(updateRole)
   }
