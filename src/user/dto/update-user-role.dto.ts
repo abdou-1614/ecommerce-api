@@ -14,4 +14,5 @@ export class UpdateUserRole {
     })
     @IsEnum(Role)
     role: Role
+    
 }
