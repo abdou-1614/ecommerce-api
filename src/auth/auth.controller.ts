@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import { Request } from 'express';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { Public } from './public.decorator';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { UserToken } from '@prisma/client';
 
 @ApiTags('authentication')
@@ -19,6 +19,9 @@ export class AuthController {
     @Public()
     @HttpCode(HttpStatus.OK)
     @Post('login')
+    @ApiOkResponse({
+      type: LoginResponseDto
+    })
     async login(@Body() {email, password}: LoginDto, @Req() request: Request): Promise<LoginResponseDto> {
       const browserInfo = `${request.ip} ${request.headers['user-agent']} ${request.headers['accept-language']}`.replace(
         / undefined/g,
@@ -33,6 +36,9 @@ export class AuthController {
     @Public()
     @HttpCode(HttpStatus.OK)
     @Post('refresh')
+    @ApiOkResponse({
+      type: LoginResponseDto
+    })
     async refreshToken(@Body() {refreshToken}: RefreshTokenDto, @Req() request: Request): Promise<LoginResponseDto> {
       const browserInfo = `${request.ip} ${request.headers['user-agent']} ${request.headers['accept-language']}`.replace(
         / undefined/g,
