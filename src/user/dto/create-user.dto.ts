@@ -8,6 +8,7 @@ export class CreateUserDto implements User {
         uniqueItems: true,
         example: 'test@example.com'
     })
+    
     @IsEmail({message: 'Must be An Email'})
     email: string
 
