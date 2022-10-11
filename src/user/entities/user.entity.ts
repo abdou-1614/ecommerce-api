@@ -26,6 +26,7 @@ export class User implements Prisma.UserUncheckedCreateInput {
      * User Name
      * @example "John Doe"
      */
+    
      @ApiProperty({
         example: 'Harry Potter'
     })
