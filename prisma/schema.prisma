@@ -22,9 +22,10 @@ model User {
   updatedAt DateTime @updatedAt
 
   UserTokens UserToken[]
+  Purchase Purchase[]
 }
 model UserToken {
-  id String @unique @default(uuid())
+  id String @unique @id @default(uuid())
 
   user User @relation(fields: [userId], references: [id])
   userId String
@@ -32,6 +33,42 @@ model UserToken {
   family String @unique
   browserInfo String?
   expireIn DateTime
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id String @unique @id @default(uuid())
+  name String @unique
+  urlName String @unique
+  image String? 
+  price Decimal
+  discountPercentage Int @default(0)
+  stock Int @default(0)
+  description String?
+  createdAt DateTime @default(now())
+  categories Category[]
+  Purchase Purchase[]
+}
+
+model Category {
+  id String @id @unique @default(uuid())
+  name String @unique
+  products Product[]
+}
+
+model Purchase {
+  id String @id @unique @default(uuid())
+
+  user User? @relation(fields: [userId], references: [id])
+  userId String?
+
+  product Product @relation(fields: [productId], references: [id])
+  productId String
+
+  amount Int @default(1)
+  totalPrice Decimal
+  reviewNote Int?
+  reviewComment String?
   createdAt DateTime @default(now())
 }
 
