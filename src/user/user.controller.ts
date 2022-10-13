@@ -7,6 +7,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { DeleteUserDto } from './dto/delete-user.dto';
 import { UpdateUserRole } from './dto/update-user-role.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 import { UserWithoutPassword } from './entities/without-password.entity';
 import { UserService } from './user.service';
 
@@ -31,7 +32,7 @@ export class UserController {
   @ApiOkResponse({
     type: UserWithoutPassword
   })
-  findById(@CurrentUser('id') userId: string): Promise<UserWithoutPassword> {
+  findById(@CurrentUser() userId: User['id']): Promise<UserWithoutPassword> {
     return this.userService.findById(userId)
   }
   /** Update User Informations */
@@ -42,7 +43,7 @@ export class UserController {
   @ApiOkResponse({
     type: UserWithoutPassword
   })
-  update(@CurrentUser('id') userId: string, @Body() updateUser: UpdateUserDto): Promise<UserWithoutPassword> {
+  update(@CurrentUser('id') userId: User['id'], @Body() updateUser: UpdateUserDto): Promise<UserWithoutPassword> {
     return this.userService.update(userId, updateUser)
   }
 
@@ -63,7 +64,7 @@ export class UserController {
   @ApiBearerAuth()
   @Delete()
   @HttpCode(HttpStatus.NO_CONTENT)
-  delete(@CurrentUser() userId: string, @Body() delteUser: DeleteUserDto) {
-    return this.userService.deleteUser(userId, delteUser)
+  delete(@CurrentUser() userId: User['id'], @Body() deleteUser: DeleteUserDto) {
+    return this.userService.deleteUser(userId, deleteUser)
   }
 }
