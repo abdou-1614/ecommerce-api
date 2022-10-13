@@ -2,7 +2,7 @@ import { refreshJwtConfig } from './../config/jwt.config';
 import ms from 'ms'
 
 export function TokenExpirationDate(): Date {
-    const expireIn = ms(String(refreshJwtConfig.expiresIn)) / 1000 / 60 / 60 / 24
+    const expireIn = ms(refreshJwtConfig.expiresIn as string) / 1000 / 60 / 60 / 24
     const expireAt = AddDays(expireIn)
     return expireAt
 }
