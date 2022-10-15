@@ -1,6 +1,7 @@
 import { MulterOptions } from '@nestjs/platform-express/multer/interfaces/multer-options.interface'
 import {diskStorage} from 'multer'
 import path from 'path'
+import { FileTypeException } from 'src/products/exceptions/file-type.exception'
 
 export const validImageUploadTypes = /jpeg|jpg|png/
 
@@ -28,7 +29,7 @@ export const MulterConfig: MulterOptions = {
             path.extname(file.originalname).toLowerCase()
         )
         if(mimeType && extname) return callback(null, true)
-        return callback(new Error(`File upload only supports the following filetypes - ${validImageUploadTypes}`), false)
+        return callback(new FileTypeException(validImageUploadTypes), false)
     },
 
     limits: {
