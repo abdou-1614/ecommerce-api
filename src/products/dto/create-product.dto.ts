@@ -11,12 +11,12 @@ export class CreateProductsDto extends OmitType(Products, ['id', 'urlName', 'cre
 
     @IsNumber()
     @IsNotEmpty()
-    @ApiProperty()
+    @ApiProperty({type: 'number'})
     price: string | number | Decimal
 
     @ApiFile()
     @IsNotEmpty()
-    picture: Express.Multer.File
+    image: Express.Multer.File['filename']
 
     @IsNumber()
     @IsOptional()
@@ -30,6 +30,7 @@ export class CreateProductsDto extends OmitType(Products, ['id', 'urlName', 'cre
 
     @IsString()
     @IsOptional()
+    @ApiProperty()
     description?: string;
 
 
