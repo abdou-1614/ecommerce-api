@@ -1,6 +1,7 @@
+import { ProductResponse } from './dto/product-response.dto';
 import { Body, Controller, Post, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { isAdmin } from 'src/common/decorators/isAdmin.decorator';
 import { CreateProductsDto } from './dto/create-product.dto';
 import { Products } from './entities/products.entity';
@@ -14,7 +15,7 @@ export class ProductsController {
 
   @ApiOperation({summary: 'Admin Create Product'})
   @ApiOkResponse({
-    type: Products
+    type: ProductResponse
   })
   @ApiBody({ type: CreateProductsDto })
   @ApiConsumes('multipart/form-data')
