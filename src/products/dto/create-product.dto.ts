@@ -1,9 +1,10 @@
 import { Products } from './../entities/products.entity';
 import { ApiProperty, OmitType } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Decimal } from '@prisma/client/runtime';
 import { ApiFile } from 'src/common/decorators/swagger-file-upload.decorator';
-export class CreateProductsDto extends OmitType(Products, ['id', 'urlName', 'createdAt'] as const) {
+import { Type } from 'class-transformer';
+export class CreateProductsDto extends OmitType(Products, ['id', 'urlName', 'createdAt', 'image'] as const) {
     @IsNotEmpty()
     @IsString()
     @ApiProperty()
@@ -11,20 +12,25 @@ export class CreateProductsDto extends OmitType(Products, ['id', 'urlName', 'cre
 
     @IsNumber()
     @IsNotEmpty()
-    @ApiProperty({type: 'number'})
-    price: string | number | Decimal
+    @Type(() => Number)
+    @ApiProperty({
+        type: Number
+    })
+    price: number | string | Decimal
 
     @ApiFile()
     @IsNotEmpty()
-    image: Express.Multer.File['filename']
+    image: Express.Multer.File
 
     @IsNumber()
     @IsOptional()
+    @Type(() => Number)
     @ApiProperty()
     discountPercentage?: number
 
     @IsOptional()
-    @IsNumber()
+    @IsInt()
+    @Type(() => Number)
     @ApiProperty()
     stock?: number
 
