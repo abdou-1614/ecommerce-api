@@ -5,36 +5,24 @@ export class Products implements Prisma.ProductUncheckedCreateInput {
    * Product ID as UUID
    * @example "1k4ca8a4-8aa0-4302-ac1b-7b5547f01b0a"
    */
-    @ApiProperty({
-        example: '1k4ca8a4-8aa0-4302-ac1b-7b5547f01b0a'
-    })
     id?: string;
 
     /**
    * Product name
    * @example "Apple Smart Watch"
    */
-    @ApiProperty({
-        example: 'Apple Smart Watch'
-    })
     name: string;
 
     /**
    * Product name turned to url
    * @example "apple-smart-watch"
    */
-    @ApiProperty({
-        example: 'apple-smart-watch'
-    })
     urlName: string;
 
     /**
    * Product picture
    * @example "image.jpg"
    */
-    @ApiProperty({
-        example: 'image.jpg'
-    })
     image?: string;
     /**
     * Product price not considering discounts.
@@ -42,43 +30,28 @@ export class Products implements Prisma.ProductUncheckedCreateInput {
     * with currency.js
     * @example 43.00
     */
-    @ApiProperty({
-        example: '42.00'
-    })
     price: string | number | Prisma.Decimal ;
     /**
    * Product discount in percentage. Defaults to 0
    * @example 10
    */
-    @ApiProperty({
-        example: '10'
-    })
     discountPercentage?: number;
 
 
     /** Product stock amount. Defaults to 0
    * @example 42
    */
-    @ApiProperty({
-        example: '42'
-    })
     stock?: number;
 
     /**
    * Product description
    * @example "Red Apple Smart Watch Series 7 "
    */
-    @ApiProperty({
-        example: 'Red Apple Smart Watch Series 7'
-    })
     description?: string;
 
     /**
    * Product createdAt dateString
    * @example "2022-10-11T19:21:28.527Z"
    */
-    @ApiProperty({
-        example: '2022-10-11T19:21:28.527Z'
-    })
     createdAt?: string | Date;
 }
