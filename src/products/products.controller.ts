@@ -1,8 +1,8 @@
 import { FindProductDto } from './dto/find-product.dto';
 import { ProductResponse } from './dto/product-response.dto';
-import { Body, Controller, Get, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { isAdmin } from 'src/common/decorators/isAdmin.decorator';
 import { CreateProductsDto } from './dto/create-product.dto';
 import { Products } from './entities/products.entity';
@@ -16,7 +16,7 @@ export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
   @ApiOperation({summary: 'Admin Create Product'})
-  @ApiOkResponse({
+  @ApiCreatedResponse({
     type: ProductResponse
   })
   @ApiBody({ type: CreateProductsDto })
@@ -37,5 +37,20 @@ export class ProductsController {
   @Get()
   async getProducts(@Query() findAllProductDto: FindProductDto): Promise<Products[]> {
     return this.productsService.findAllProduct(findAllProductDto)
+  }
+
+  @ApiOkResponse({type: ProductResponse})
+  @ApiOperation({summary: 'Gets Products by Id For Admin', description: 'Find product by ID, only for admins'})
+  @Get('/id/:id')
+  @isAdmin()
+  async getSingleProduct(@Param('id') id: string): Promise<Products>{
+    return this.productsService.findProduct(id)
+  }
+  @ApiOkResponse({type: ProductResponse})
+  @ApiOperation({summary: 'Gets Products By UrlName', description: 'Find By UrlName'})
+  @Public()
+  @Get(':/urlName')
+  async findByUrlName(@Param('urlName') urlName: string): Promise<Products>{
+    return this.productsService.findProductByUrlName(urlName)
   }
 }
