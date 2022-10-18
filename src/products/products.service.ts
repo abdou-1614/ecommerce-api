@@ -3,7 +3,7 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { Products } from './entities/products.entity';
-import { File } from './types/file';
+import { FindProductDto } from './dto/find-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -22,6 +22,21 @@ export class ProductsService {
         })
 
         return product
+    }
+
+    async findAllProduct({productName = '', page = 1, offset = 10}: FindProductDto): Promise<Products[]> {
+        const productToSkip = (page - 1) * offset
+        return this.prisma.product.findMany({
+            skip: productToSkip,
+            take: offset,
+            where: {
+                name: {contains: productName, mode: 'insensitive'}
+            },
+            orderBy: {name: 'asc'},
+            include: {
+                categories: {select: {name: true}}
+            }
+        })
     }
 
    /** Formats the name to generate an urlName.
