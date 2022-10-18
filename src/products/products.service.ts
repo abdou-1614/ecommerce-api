@@ -39,6 +39,32 @@ export class ProductsService {
         })
     }
 
+    /**
+     * Find Products By UrlName For Admin
+     * 
+     */
+
+    async findProduct(id: string): Promise<Products>{
+        return this.prisma.product.findUnique({
+            where: {id},
+            include: {categories: {select: {name: true}}},
+            rejectOnNotFound: true
+        })
+    }
+
+    /**
+     * Find Products By UrlName For Users
+     * 
+     */
+
+    async findProductByUrlName(urlName: string){
+        return this.prisma.product.findUnique({
+            where: {urlName},
+            include: {categories: {select: {name: true}}},
+            rejectOnNotFound: true
+        })
+    }
+
    /** Formats the name to generate an urlName.
    *
    * Makes the name lower case, remove leading and trailing white spaces,
