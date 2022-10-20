@@ -1,6 +1,6 @@
 import { FindProductDto } from './dto/find-product.dto';
 import { ProductResponse } from './dto/product-response.dto';
-import { Body, Controller, Get, Param, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { isAdmin } from 'src/common/decorators/isAdmin.decorator';
@@ -9,6 +9,7 @@ import { Products } from './entities/products.entity';
 import { FileToBodyInterceptor } from './interceptors/file.interceptor';
 import { ProductsService } from './products.service';
 import { Public } from 'src/auth/public.decorator';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @ApiTags('Product')
 @Controller('products')
@@ -49,8 +50,16 @@ export class ProductsController {
   @ApiOkResponse({type: ProductResponse})
   @ApiOperation({summary: 'Gets Products By UrlName', description: 'Find By UrlName'})
   @Public()
-  @Get(':/urlName')
+  @Get(':urlName')
   async findByUrlName(@Param('urlName') urlName: string): Promise<Products>{
     return this.productsService.findProductByUrlName(urlName)
+  }
+
+  @ApiOkResponse({type: ProductResponse})
+  @ApiOperation({summary: 'Update Products Only For Admin'})
+  @isAdmin()
+  @Patch('update')
+  async updateProduct(@Param('id') id: string, @Body() updateProduct: UpdateProductDto): Promise<Products>{
+    return this.productsService.updateProduct(id, updateProduct)
   }
 }
