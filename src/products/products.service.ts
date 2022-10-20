@@ -4,6 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { Products } from './entities/products.entity';
 import { FindProductDto } from './dto/find-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductsService {
@@ -65,6 +66,20 @@ export class ProductsService {
         })
     }
 
+    async updateProduct(id: string, updateProduct: UpdateProductDto) {
+        if(updateProduct.name) {
+            return this.updateProductAndUrlName(id, updateProduct)
+        }
+        const categories = this.connectCategoryByID(updateProduct.categories)
+        return this.prisma.product.update({
+            where: {id},
+            data: {
+                ...updateProduct,
+                categories
+            }
+        })
+    }
+
    /** Formats the name to generate an urlName.
    *
    * Makes the name lower case, remove leading and trailing white spaces,
@@ -81,6 +96,19 @@ export class ProductsService {
         const spaceToHyphenUrlName  = singleSpaceUrlName.split(' ').join('-')
         return spaceToHyphenUrlName
     }
+
+    private updateProductAndUrlName(id: string, updateProduct: UpdateProductDto): Promise<Products> {
+        const urlName = this.formatUrlName(updateProduct.name)
+        const categories = this.connectCategoryByID(updateProduct.categories)
+        return this.prisma.product.update({
+            where: {id},
+            data: {
+                ...updateProduct,
+                categories,
+                urlName
+            },
+        })
+    }
     /**
    * Format the categories IDs array into the prisma query way
    */
@@ -90,7 +118,9 @@ export class ProductsService {
 
         if(categories) {
             categoriesConnection = {
-                connect: categories.map(category => {id: category}) 
+                connect: categories.map((category) => {
+                    return {id: category}
+                }) 
             }
         }
         return categoriesConnection
