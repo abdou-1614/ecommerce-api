@@ -1,10 +1,13 @@
+import { UpdateProductimage } from './dto/update-image.dto';
 import { CreateProductsDto } from './dto/create-product.dto';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Products } from './entities/products.entity';
 import { FindProductDto } from './dto/find-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { validImageUploadTypes } from 'src/config/multer.config';
+import fs from 'fs';
 
 @Injectable()
 export class ProductsService {
@@ -66,7 +69,7 @@ export class ProductsService {
         })
     }
 
-    async updateProduct(id: string, updateProduct: UpdateProductDto) {
+    async updateProduct(id: string, updateProduct: UpdateProductDto): Promise<Products> {
         if(updateProduct.name) {
             return this.updateProductAndUrlName(id, updateProduct)
         }
@@ -76,6 +79,25 @@ export class ProductsService {
             data: {
                 ...updateProduct,
                 categories
+            }
+        })
+    }
+
+    async updateImage(id: string, updateImage: UpdateProductimage): Promise<Products> {
+        const product = await this.prisma.product.findUnique({
+            where: {id}
+        })
+        if(product.image) {
+            throw new BadRequestException('Please Upload an Image!')
+        }
+
+        const filePath = this.getPath(product.image)
+        fs.unlinkSync(filePath)
+
+        return this.prisma.product.update({
+            where: {id},
+            data: {
+                image: updateImage.image.filename
             }
         })
     }
@@ -109,6 +131,15 @@ export class ProductsService {
             },
         })
     }
+    /**
+     * find Path Of Image uploaded For Delted From Folder
+     */
+    private getPath(image: string) {
+        return `${process.cwd()}/tmp/${image}.${validImageUploadTypes}`
+    }
+
+
+
     /**
    * Format the categories IDs array into the prisma query way
    */
