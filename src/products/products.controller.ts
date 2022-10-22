@@ -1,6 +1,7 @@
+import { UpdateProductimage } from './dto/update-image.dto';
 import { FindProductDto } from './dto/find-product.dto';
 import { ProductResponse } from './dto/product-response.dto';
-import { Body, Controller, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { isAdmin } from 'src/common/decorators/isAdmin.decorator';
@@ -10,6 +11,7 @@ import { FileToBodyInterceptor } from './interceptors/file.interceptor';
 import { ProductsService } from './products.service';
 import { Public } from 'src/auth/public.decorator';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { FileUpload } from 'src/common/decorators/file-upload.decorator';
 
 @ApiTags('Product')
 @Controller('products')
@@ -62,4 +64,20 @@ export class ProductsController {
   async updateProduct(@Param('id') id: string, @Body() updateProduct: UpdateProductDto): Promise<Products>{
     return this.productsService.updateProduct(id, updateProduct)
   }
+
+  @ApiOkResponse({type: ProductResponse})
+  @ApiOperation({summary: 'Admin Can Update Product Image'})
+  @FileUpload()
+  @isAdmin()
+  @Patch('image/:id')
+  async updateImage(@Param('id') id: string, @Body() updateImage: UpdateProductimage) {
+    return this.productsService.updateImage(id, updateImage)
+  }
+  @ApiOperation({summary: 'Admin Delete Products'})
+  @isAdmin()
+  @Delete('/:id')
+  async deleteProduct(@Param('id') id: string){
+     return this.productsService.deleteProduct(id)
+  }
+
 }
