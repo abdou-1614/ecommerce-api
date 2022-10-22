@@ -1,5 +1,5 @@
 import { Products } from './../entities/products.entity';
-import { ApiProperty, OmitType } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional, OmitType } from '@nestjs/swagger';
 import { IsArray, IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Decimal } from '@prisma/client/runtime';
 import { ApiFile } from 'src/common/decorators/swagger-file-upload.decorator';
