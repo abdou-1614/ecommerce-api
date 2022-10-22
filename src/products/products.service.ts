@@ -2,7 +2,7 @@ import { UpdateProductimage } from './dto/update-image.dto';
 import { CreateProductsDto } from './dto/create-product.dto';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, HttpCode, HttpStatus } from '@nestjs/common';
 import { Products } from './entities/products.entity';
 import { FindProductDto } from './dto/find-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -87,9 +87,6 @@ export class ProductsService {
         const product = await this.prisma.product.findUnique({
             where: {id}
         })
-        if(product.image) {
-            throw new BadRequestException('Please Upload an Image!')
-        }
 
         const filePath = this.getPath(product.image)
         fs.unlinkSync(filePath)
@@ -100,6 +97,24 @@ export class ProductsService {
                 image: updateImage.image.filename
             }
         })
+    }
+
+    async deleteProduct(id: string) {
+        const product = await this.prisma.product.delete({
+            where: {id}
+        })
+
+        if(!product){
+            throw new NotFoundException('No Product Found')
+        }
+
+        const path = this.getPath(product.image)
+        fs.unlinkSync(path)
+
+        return {
+            meassge:'Product Deleted Successfully',
+            status: HttpStatus.OK
+        }
     }
 
    /** Formats the name to generate an urlName.
@@ -135,7 +150,7 @@ export class ProductsService {
      * find Path Of Image uploaded For Delted From Folder
      */
     private getPath(image: string) {
-        return `${process.cwd()}/tmp/${image}.${validImageUploadTypes}`
+        return `${process.cwd()}/tmp/${image}`
     }
 
 
