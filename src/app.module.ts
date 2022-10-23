@@ -5,8 +5,9 @@ import { PrismaModule } from './prisma/prisma.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
+import { CategoryModule } from './category/category.module';
 @Module({
-  imports: [PrismaModule, UserModule, AuthModule, ProductsModule],
+  imports: [PrismaModule, UserModule, AuthModule, ProductsModule, CategoryModule],
   providers: [
     {
       provide: APP_GUARD,
