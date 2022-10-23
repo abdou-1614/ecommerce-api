@@ -66,6 +66,20 @@ export class CategoryService {
         return category
     }
 
+    async update(id: string, updateCategory: UpdateCategoryDto): Promise<Category> {
+        if(updateCategory.name) {
+            return this.updateNameAndCategory(id, updateCategory)
+        }
+
+        const category = await this.prisma.category.update({
+            where: {id},
+            data: {
+                ...updateCategory
+            }
+        })
+        return category
+    }
+
     /** Capitalize only the first letter of the category name */
 
     private capitalizeFirstLatter(name: string) {
