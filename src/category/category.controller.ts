@@ -9,7 +9,7 @@ import { FindCategoryDto } from './dto/find-category.dto';
 import { Public } from 'src/auth/public.decorator';
 
 @ApiTags('Category')
-@Controller()
+@Controller('category')
 export class CategoryController {
     constructor(private categoryService: CategoryService) {}
 
@@ -35,5 +35,12 @@ export class CategoryController {
     @Get('/id/:id')
     async findById(@Param('id') id: string, @Query() findProducts: FindProductDto) {
         return this.categoryService.findOneById(id, findProducts)
+    }
+    @ApiOperation({summary: 'Find Category And Its Products', description: 'Find category by name'})
+    @ApiOkResponse({type: Category})
+    @Public()
+    @Get('/name/:name')
+    async findByName(@Param('name') name: string, @Query() findProduct: FindProductDto) {
+        return this.categoryService.findOneByName(name, findProduct)
     }
 }
