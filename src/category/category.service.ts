@@ -1,3 +1,4 @@
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { FindCategoryDto } from './dto/find-category.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { PrismaService } from './../prisma/prisma.service';
@@ -47,9 +48,39 @@ export class CategoryService {
         return category
     }
 
+    async findOneByName(name: string, {productName = '', page = 0, offset = 10}: FindProductDto): Promise<Category> {
+        const productToSkip = (page - 1) * offset
+        name = this.capitalizeFirstLatter(name)
+        const category = await this.prisma.category.findUnique({
+            where: {name},
+            include: {
+                products: {
+                    select: {name: true, id: true, urlName: true, image: true},
+                    where: {name: {contains: productName, mode: 'insensitive'}},
+                    skip: productToSkip,
+                    take: offset
+                }
+            },
+            rejectOnNotFound: true
+        })
+        return category
+    }
+
     /** Capitalize only the first letter of the category name */
 
     private capitalizeFirstLatter(name: string) {
         return name[0].toUpperCase + name.substring(1).toLocaleLowerCase()
+    }
+   /** Formats name and updates the category with the new one.
+   *
+   * Used when the user updates the category name.
+   */
+    private updateNameAndCategory(id: string, updateCategory: UpdateCategoryDto) {
+        const name = this.capitalizeFirstLatter(updateCategory.name)
+
+        return this.prisma.category.update({
+            where: {id},
+            data: {...updateCategory, name}
+        })
     }
 }
