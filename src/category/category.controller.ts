@@ -1,8 +1,9 @@
+import { UpdateCategoryDto } from './dto/update-category.dto';
 import { FindProductDto } from './../products/dto/find-product.dto';
 import { Category } from './entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CategoryService } from './category.service';
-import { Body, Controller, Get, Param, Post, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { isAdmin } from 'src/common/decorators/isAdmin.decorator';
 import { FindCategoryDto } from './dto/find-category.dto';
@@ -42,5 +43,13 @@ export class CategoryController {
     @Get('/name/:name')
     async findByName(@Param('name') name: string, @Query() findProduct: FindProductDto) {
         return this.categoryService.findOneByName(name, findProduct)
+    }
+
+    @ApiOperation({summary: 'Update Category For Admin', description: 'Updates category information, only for admins'})
+    @ApiOkResponse({type: Category})
+    @isAdmin()
+    @Patch('/:id')
+    async updateCategory(@Param('id') id: string, @Body() update: UpdateCategoryDto): Promise<Category>{
+        return this.categoryService.update(id, update)
     }
 }
