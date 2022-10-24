@@ -2,7 +2,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { FindCategoryDto } from './dto/find-category.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { PrismaService } from './../prisma/prisma.service';
-import {Injectable} from '@nestjs/common'
+import {HttpStatus, Injectable} from '@nestjs/common'
 import { Category } from './entities/category.entity';
 import { FindProductDto } from 'src/products/dto/find-product.dto';
 
@@ -78,6 +78,17 @@ export class CategoryService {
             }
         })
         return category
+    }
+
+    async remove(id: string) {
+        await this.prisma.category.delete({
+            where: {id}
+        })
+
+        return {
+            meassge:'Category Deleted Successfully',
+            status: HttpStatus.OK
+        }
     }
 
     /** Capitalize only the first letter of the category name */
