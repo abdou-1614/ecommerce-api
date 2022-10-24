@@ -3,7 +3,7 @@ import { FindProductDto } from './../products/dto/find-product.dto';
 import { Category } from './entities/category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CategoryService } from './category.service';
-import { Body, Controller, Get, Param, Patch, Post, Query } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { isAdmin } from 'src/common/decorators/isAdmin.decorator';
 import { FindCategoryDto } from './dto/find-category.dto';
@@ -51,5 +51,12 @@ export class CategoryController {
     @Patch('/:id')
     async updateCategory(@Param('id') id: string, @Body() update: UpdateCategoryDto): Promise<Category>{
         return this.categoryService.update(id, update)
+    }
+
+    @ApiOperation({summary: 'Delete Category For Admin', description: 'Deletes category from database, only for admins'})
+    @isAdmin()
+    @Delete('/:id')
+    async deleteCategory(@Param('id') id: string){
+        return this.categoryService.remove(id)
     }
 }
