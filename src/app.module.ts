@@ -6,8 +6,9 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductsModule } from './products/products.module';
 import { CategoryModule } from './category/category.module';
+import { PurchaseModule } from './purchase/purchase.module';
 @Module({
-  imports: [PrismaModule, UserModule, AuthModule, ProductsModule, CategoryModule],
+  imports: [PrismaModule, UserModule, AuthModule, ProductsModule, CategoryModule, PurchaseModule],
   providers: [
     {
       provide: APP_GUARD,
