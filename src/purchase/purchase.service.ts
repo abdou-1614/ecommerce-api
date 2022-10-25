@@ -1,3 +1,4 @@
+import { FindPurchaseDto } from './dto/find-purchase.dto';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { PrismaService } from './../prisma/prisma.service';
 import { Injectable } from '@nestjs/common';
@@ -24,6 +25,27 @@ export class PurchaseService {
         })
         return purchase
     }
+
+    async findPurchase({userId, productId, page = 1, offset = 10}:FindPurchaseDto): Promise<Purchase[]> {
+        const purchaseToSkip = (page - 1) * offset
+
+        const purchases = await this.prisma.purchase.findMany({
+            skip: purchaseToSkip,
+            take: offset,
+            where: {
+                userId: {equals: userId},
+                productId: {equals: productId}
+            },
+            orderBy: {createdAt: 'desc'},
+            include: {
+                user: {select: {name: true}},
+                product: {select: {name: true}}
+            }
+        })
+
+        return purchases
+    }
+
 
 
     private async calculateTotalPrice({productId, amount}: CreatePurchaseDto): Promise<number> {
