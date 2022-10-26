@@ -37,8 +37,8 @@ export class Purchase implements Prisma.PurchaseUncheckedCreateInput {
     reviewNote?: number;
 
     @ApiProperty({
-        example: 'Amazing wheelchair!',
-        type: Number
+        example: 'I am Happy To Buy This phone',
+        type: String
     })
     reviewComment?: string;
     
