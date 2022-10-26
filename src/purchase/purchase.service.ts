@@ -7,6 +7,7 @@ import currency from 'currency.js';
 import { Purchase } from './entities/purchase.entity';
 import { NotOwnerPurchase } from './exceptions/purchase-owner.exception';
 import { ReviewDto } from './dto/review-purchase.dto';
+import { UpdatePurchaseDto } from './dto/update-purchase.dto';
 
 @Injectable()
 export class PurchaseService {
@@ -87,6 +88,29 @@ export class PurchaseService {
             }
         })
     }
+
+    async update(id: string, updatePurchase: UpdatePurchaseDto): Promise<Purchase> {
+        const purchase = await this.prisma.purchase.findUnique({
+            where: {id}
+        })
+
+        const productId = updatePurchase.productId || purchase.productId
+        const amount = updatePurchase.amount || purchase.amount
+        const totalPrice = await this.calculateTotalPrice({productId, amount})
+
+        return this.prisma.purchase.update({
+            where: {id},
+            data: {
+                ...updatePurchase,
+                totalPrice
+            },
+            include: {
+                user: {select: {name: true}},
+                product: {select: {name: true}}
+            }
+        })
+    }
+
 
 
 
