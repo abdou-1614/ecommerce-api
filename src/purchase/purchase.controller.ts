@@ -1,3 +1,4 @@
+import { UpdatePurchaseDto } from './dto/update-purchase.dto';
 import { ReviewDto } from './dto/review-purchase.dto';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { Body, Controller, Get, Param, Patch, Post, Query, Req } from '@nestjs/common';
@@ -59,5 +60,13 @@ export class PurchaseController {
   @Patch('/review/:id')
   async review(@CurrentUser() userId: User['id'], @Param('id') purchaseId: string, @Body() reviewDto: ReviewDto): Promise<Purchase> {
       return this.purchaseService.review(purchaseId, userId, reviewDto)
+  }
+
+  @ApiOkResponse({type: Purchase})
+  @ApiOperation({summary: 'Update Purchase'})
+  @isAdmin()
+  @Patch('/:id')
+  async update(@Param('id') id: string, @Body() updatePurchase: UpdatePurchaseDto): Promise<Purchase> {
+    return this.purchaseService.update(id, updatePurchase)
   }
 }
