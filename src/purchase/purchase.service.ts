@@ -2,7 +2,7 @@ import { Role } from '@prisma/client';
 import { FindPurchaseDto } from './dto/find-purchase.dto';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { PrismaService } from './../prisma/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import currency from 'currency.js';
 import { Purchase } from './entities/purchase.entity';
 import { NotOwnerPurchase } from './exceptions/purchase-owner.exception';
@@ -109,6 +109,17 @@ export class PurchaseService {
                 product: {select: {name: true}}
             }
         })
+    }
+
+    async delete(id: string) {
+        await this.prisma.purchase.delete({
+            where: {id}
+        })
+
+        return {
+            message: 'Purchase Deleted Successfuly',
+            status: HttpStatus.OK
+        }
     }
 
 
