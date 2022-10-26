@@ -1,7 +1,7 @@
 import { UpdatePurchaseDto } from './dto/update-purchase.dto';
 import { ReviewDto } from './dto/review-purchase.dto';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
-import { Body, Controller, Get, Param, Patch, Post, Query, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, Req } from '@nestjs/common';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { User } from 'src/user/entities/user.entity';
 import { PurchaseService } from './purchase.service';
@@ -68,5 +68,12 @@ export class PurchaseController {
   @Patch('/:id')
   async update(@Param('id') id: string, @Body() updatePurchase: UpdatePurchaseDto): Promise<Purchase> {
     return this.purchaseService.update(id, updatePurchase)
+  }
+
+  @ApiOperation({summary: 'Delete Purchase Only For Admin'})
+  @isAdmin()
+  @Delete('/:id')
+  async remove(@Param('id') id: string) {
+    return this.purchaseService.delete(id)
   }
 }
