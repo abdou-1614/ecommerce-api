@@ -2,6 +2,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { ExceptionInterceptor } from './common/interceptors/exception.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -10,6 +11,8 @@ async function bootstrap() {
     whitelist: true,
     forbidNonWhitelisted: true
   }))
+
+  app.useGlobalInterceptors(new ExceptionInterceptor())
 
   const config = new DocumentBuilder()
   .setTitle('Ecommerce BackEnd')
