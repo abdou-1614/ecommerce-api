@@ -14,6 +14,8 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ExceptionInterceptor())
 
+  app.enableCors()
+  
   const config = new DocumentBuilder()
   .setTitle('Ecommerce BackEnd')
   .setDescription('BackEnd Ecommerce App')
@@ -26,6 +28,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document, {
     customSiteTitle: 'E-commerce Swagger API'
   })
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
