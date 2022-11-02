@@ -105,18 +105,15 @@ export class AuthService {
     async validateUser(email: string, password: string){
         const user = await this.userService.findByEmail(email)
 
-        if(!user) {
-            throw new InvalidEmailOrPassword()
-        }
-        const isPassword = await compare(password, user.password)
-
-        if(!isPassword) {
-            throw new InvalidEmailOrPassword()
-        }
-        return{
-            ...user, 
-            password: undefined
-        }
+        if (user) {
+            const isPasswordValid = await compare(password, user.password);
+      
+            if (isPasswordValid) {
+              return { ...user, password: undefined };
+            }
+          }
+      
+          throw new InvalidEmailOrPassword();
     }
      /** Generates access token */
 
